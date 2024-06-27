@@ -25,44 +25,50 @@ def show_slice(img, slicenb):
 def show_slice_series(img):
     raise NotImplementedError
 
+
+
 nifti_dir = ''
 niftyreg_dir = '/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/'
 scans_dir = '../data/nii_dataset/'
 # Parameters for the registration
-aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000 '
-dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000 '
+aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000'
+dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000'
 
 
 imgs = list_nii_gz_files(scans_dir)
 baseline_imgs = sorted([img for img in imgs if 'Y0' in img])
 y2_imgs = sorted([img for img in imgs if 'Y2' in img])
+patients = list(zip(baseline_imgs, y2_imgs))
 
 
-vol = nib.load(baseline_imgs[0])
-vol_data = vol.get_fdata()
-plt.imshow(ndi.rotate(vol_data[96], 90), cmap='bone')
-plt.axis('off')
-plt.show()
+for patient in patients:
 
-'''
-ct_image_path = nifti_dir + 'ct_image.nii.gz'
-cbct_image_path = nifti_dir + 'cbct_image.nii.gz'
-aff_path = nifti_dir + 'aff.txt'
-cpp_path = nifti_dir + 'cpp.nii.gz'
-res_aff_image_path = nifti_dir + 'res_aff.nii.gz'
-res_dir_image_path = nifti_dir + 'res_dir.nii.gz'
+    source_img = patient[0]
+    target_img = patient[1]
+
+    identifier = "".join([ele for ele in patient[0] if ele.isdigit()])
+    print('^^^^^^^^^^^^^^^^^')
+    print('REGISTRATION STARTED for patient %s' % identifier)
+    print('^^^^^^^^^^^^^^^^^')
+
+    aff_output_path = 'output_%s.nii.gz' % identifier
+    affine_transform_path = 'affine_transform_%s.txt' % identifier
+
+    def_output_path = 'def_output_%s.nii.gz' % identifier
+    cpp_path = 'cpp_%s.nii' % identifier
 
 
-# comand line to run the registrtastion script
+    affine_command = niftyreg_dir + 'reg_aladin -flo ' + target_img + ' -ref ' + source_img + ' -res ' + aff_output_path + ' -aff ' + affine_transform_path + aff_par
+    os.system(affine_command)
 
-affine_command = niftyreg_dir + 'reg_aladin -flo ' + ct_image_path + ' -ref ' + cbct_image_path + ' -res ' + res_aff_image_path + ' -aff ' + aff_path + aff_par
-os.system(affine_command)
 
-deformable_command = niftyreg_dir + 'reg_f3d -flo ' + ct_image_path + ' -ref ' + cbct_image_path + ' -res ' + res_dir_image_path + ' -aff ' + aff_path +  ' -cpp ' + cpp_path + dir_par
-os.system(deformable_command)
+    deformable_command = niftyreg_dir + 'reg_f3d -flo ' + target_img + ' -ref ' + source_img + ' -res ' + def_output_path + ' -aff ' + affine_transform_path +  ' -cpp ' + cpp_path + dir_par
+    os.system(deformable_command)
 
-print('Registration')
+    print('^^^^^^^^^^^^^^^^^')
+    print('REGISTRATION DONE')
+    print('^^^^^^^^^^^^^^^^^')
 
-'''
+
 
 print('Finito')
