@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.zip
+data/dataset/
+data/nii_dataset/
 # C extensions
 *.so
 
