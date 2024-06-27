@@ -3,8 +3,9 @@ import os
 #from util import suplementary_functions as sf
 import nibabel as nib
 import numpy as np
-import scipy.ndimage as ndimage
+import scipy.ndimage as ndi
 from scipy.signal import correlate
+import matplotlib.pyplot as plt
 
 def list_nii_gz_files(directory):
     nii_gz_files = []
@@ -14,6 +15,16 @@ def list_nii_gz_files(directory):
                 nii_gz_files.append(os.path.join(root, file))
     return nii_gz_files
 
+def show_slice(img, slicenb):
+    vol = nib.load(img)
+    vol_data = vol.get_fdata()
+    plt.imshow(ndi.rotate(vol_data[slicenb], 90), cmap='bone')
+    plt.axis('off')
+    plt.show()
+
+def show_slice_series(img):
+    raise NotImplementedError
+
 nifti_dir = ''
 niftyreg_dir = '/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/'
 scans_dir = '../data/nii_dataset/'
@@ -22,7 +33,17 @@ aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 
 dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000 '
 
 
-print(list_nii_gz_files(scans_dir))
+imgs = list_nii_gz_files(scans_dir)
+baseline_imgs = sorted([img for img in imgs if 'Y0' in img])
+y2_imgs = sorted([img for img in imgs if 'Y2' in img])
+
+
+vol = nib.load(baseline_imgs[0])
+vol_data = vol.get_fdata()
+plt.imshow(ndi.rotate(vol_data[96], 90), cmap='bone')
+plt.axis('off')
+plt.show()
+
 '''
 ct_image_path = nifti_dir + 'ct_image.nii.gz'
 cbct_image_path = nifti_dir + 'cbct_image.nii.gz'
