@@ -8,6 +8,9 @@ data/dataset/
 data/nii_dataset/
 # C extensions
 *.so
+*.txt
+*.nii
+*.nii.gz
 
 # Distribution / packaging
 .Python

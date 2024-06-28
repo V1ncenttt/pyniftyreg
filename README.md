@@ -106,7 +106,7 @@ print(f'Registration result: {result}')
 
 - [@V1ncenttt](https://github.com/V1ncenttt) - Initial work
 
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/V1ncenttt/cmic_registeration/contributors) who participated in this project.
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
