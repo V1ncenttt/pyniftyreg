@@ -3,33 +3,72 @@ from registrator import Registrator
 
 
 class Aladin(Registrator):
+    """
+    A subclass of Registrator for performing image registration
+    using the Aladin algorithm.
+
+    This class provides an interface for setting up and executing
+    the Aladin registration algorithm, part of the NiftyReg suite.
+    It allows for the configuration of various parameters specific
+    to the Aladin algorithm and executes the registration process
+    by constructing a command line command and executing it in the system's shell.
+
+    Attributes:
+        parameters_dict (dict): A dictionary holding the parameters
+        for the Aladin registration process. The keys are parameter names,
+        and the values are their corresponding settings.
+
+    Methods:
+        __init__: Initializes a new instance of the Aladin class,
+        setting up default parameters for the registration.
+        set_max_iterations(maxit: int): Sets the maximum number
+        of iterations for the registration algorithm.
+        register(fixed_image: str, moving_image: str): Executes the Aladin registration algorithm
+        with the configured parameters on the specified fixed and moving images.
+    """
 
     def __init__(self):
+        """
+        Initializes a new instance of the Aladin class 
+        with default parameters for the registration process.
+        """
         super().__init__()
         self.parameters_dict = {
-                                'rigOnly': True,
-                                'floLowThr': '-1000',
-                                'refLowThr': '-1000',
-                                'floUpThr': '1000',
-                                'refUpThr': '100',
-                                'pad': '-1000',
-                                'maxit': '2'
-                                }
-        
-    def set_param(self, param, value):
-        self.parameters_dict[param] = value
-    
-    def set_max_iterations(self, maxit):
-        self.parameters_dict['maxit'] = maxit
+            "rigOnly": True,
+            "floLowThr": "-1000",
+            "refLowThr": "-1000",
+            "floUpThr": "1000",
+            "refUpThr": "100",
+            "pad": "-1000",
+            "maxit": "2",
+        }
 
-    #TODO: add more setters for parameters
-    
-    def register(self, fixed_image, moving_image):
+    def set_max_iterations(self, maxit: int):
+        """
+        Sets the maximum number of iterations for the Aladin registration algorithm.
+
+        :param maxit: The maximum number of iterations as an integer.
+        """
+        self.parameters_dict["maxit"] = maxit
+
+    # TODO: add more setters for parameters
+
+    def register(self, fixed_image: str, moving_image: str):
+        """
+        Executes the Aladin registration algorithm using the configured parameters.
+
+        This method constructs a command line command based on the parameters
+        set in the `parameters_dict` and the paths to the fixed and moving images.
+        It then executes this command in the system's shell to perform the registration.
+
+        :param fixed_image: The path to the fixed image file.
+        :param moving_image: The path to the moving image file.
+        """
         # Add destinations
-        aff_output_path = "output_%s.nii.gz" % moving_image
-        affine_transform_path = "affine_transform_%s.txt" % moving_image
+        aff_output_path = f"ala_output_{moving_image}.nii.gz"
+        affine_transform_path = f"ala_affine_transform_{moving_image}.txt"
         parameters = self.__param_dict_to_str(self.parameters_dict)
-        #TODO: put in a folder?
+        # TODO: put in a folder?
 
         affine_command = (
             self.niftyreg_dir
@@ -44,7 +83,3 @@ class Aladin(Registrator):
             + parameters
         )
         os.system(affine_command)
-
-    def register_list(self, images):
-        for image_pair in images:
-            self.register(image_pair[0], image_pair[1])
