@@ -1,4 +1,3 @@
-import numpy as np
 import os 
 #from util import suplementary_functions as sf
 import nibabel as nib
@@ -45,6 +44,8 @@ for patient in patients:
 
     source_img = patient[0]
     target_img = patient[1]
+    rmask = 'summit-2455-xab_Y0_BASELINE_MASK.nii.gz'
+    fmask = 'summit-2455-xab_Y2_MASK.nii.gz'
 
     identifier = "".join([ele for ele in patient[0] if ele.isdigit()])
     print('^^^^^^^^^^^^^^^^^')
@@ -58,11 +59,11 @@ for patient in patients:
     cpp_path = 'cpp_%s.nii' % identifier
 
 
-    affine_command = niftyreg_dir + 'reg_aladin -flo ' + target_img + ' -ref ' + source_img + ' -res ' + aff_output_path + ' -aff ' + affine_transform_path + aff_par
+    affine_command = niftyreg_dir + 'reg_aladin -flo ' + target_img + ' -ref ' + source_img + ' -res ' + aff_output_path + ' -aff ' + affine_transform_path + '-rmask' + rmask + '-fmask' + fmask + aff_par
     os.system(affine_command)
 
 
-    deformable_command = niftyreg_dir + 'reg_f3d -flo ' + target_img + ' -ref ' + source_img + ' -res ' + def_output_path + ' -aff ' + affine_transform_path +  ' -cpp ' + cpp_path + dir_par
+    deformable_command = niftyreg_dir + 'reg_f3d -flo ' + target_img + ' -ref ' + source_img + ' -res ' + def_output_path + ' -aff ' + affine_transform_path +  ' -cpp ' + cpp_path + '-rmask' + rmask + '-fmask' + fmask + dir_par
     os.system(deformable_command)
 
     print('^^^^^^^^^^^^^^^^^')

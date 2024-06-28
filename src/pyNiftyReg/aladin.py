@@ -1,5 +1,5 @@
 import os
-from registrator import Registrator
+from pyNiftyReg.registrator import Registrator
 
 
 class Aladin(Registrator):
@@ -64,10 +64,11 @@ class Aladin(Registrator):
         :param fixed_image: The path to the fixed image file.
         :param moving_image: The path to the moving image file.
         """
-        # Add destinations
+        #TODO: print statements
+        #TODO: Add destinations
         aff_output_path = f"ala_output_{moving_image}.nii.gz"
         affine_transform_path = f"ala_affine_transform_{moving_image}.txt"
-        parameters = self.__param_dict_to_str(self.parameters_dict)
+        parameters = self._param_dict_to_str(self.parameters_dict)
         # TODO: put in a folder?
 
         affine_command = (

@@ -49,7 +49,7 @@ class Registrator:
         for image_pair in images:
             self.register(image_pair[0], image_pair[1])
 
-    def __param_dict_to_str(self, param_dict: dict):
+    def _param_dict_to_str(self, param_dict: dict):
         """
         Converts a dictionary of parameters into a string format suitable for command line usage.
 

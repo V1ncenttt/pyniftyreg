@@ -1,5 +1,5 @@
 import os
-from registrator import Registrator
+from pyNiftyReg.registrator import Registrator
 
 
 class F3d(Registrator):
@@ -64,7 +64,7 @@ class F3d(Registrator):
         # TODO: reformat names to get identifier but not all uri
         def_output_path = f"f3d_output_{moving_image}.nii.gz"
         cpp_path = f"f3d_cpp_{moving_image}.txt"
-        parameters = self.__param_dict_to_str(self.parameters_dict)
+        parameters = self._param_dict_to_str(self.parameters_dict)
 
         deformable_command = (
             self.niftyreg_dir
