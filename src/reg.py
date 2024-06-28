@@ -31,8 +31,8 @@ nifti_dir = ''
 niftyreg_dir = '/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/'
 scans_dir = '../data/nii_dataset/'
 # Parameters for the registration
-aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000'
-dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000'
+aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000 -maxit 2'
+dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000 -maxit 2'
 
 
 imgs = list_nii_gz_files(scans_dir)
