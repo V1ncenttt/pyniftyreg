@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> Few lines describing your project.
+<p align="center"> PyNiftyReg is a robust Python wrapper designed to simplify the integration of NiftyReg’s powerful executables into your Python projects. This library enables seamless interaction with NiftyReg’s image registration and transformation tools, allowing you to harness their full potential directly from your Python code.
     <br> 
 </p>
 
@@ -90,20 +90,21 @@ Give an example
 
 Add notes about how to use the system.
 
-## 🚀 Deployment <a name = "deployment"></a>
+```python 
+import pyniftyreg
 
-Add additional notes about how to deploy this on a live system.
+# Example of using PyNiftyReg for image registration
+fixed_image = 'path/to/fixed_image.nii'
+moving_image = 'path/to/moving_image.nii'
+output_image = 'path/to/output_image.nii'
 
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+result = pyniftyreg.register(fixed_image, moving_image, output_image)
+print(f'Registration result: {result}')
+```
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
+- [@V1ncenttt](https://github.com/V1ncenttt) - Initial work
 
 See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
 
