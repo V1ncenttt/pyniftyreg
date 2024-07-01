@@ -35,11 +35,10 @@ class F3d(Registrator):
         super().__init__()
         self.parameters_dict = {
             "lncc": True,
-            "ln": "5",
-            "lp": "4",
+            "ln": 5,
+            "lp": 4,
             "vel": True,
-            "pad": "-1000",
-            "maxit": "2",
+            "pad": -1000,
         }
 
     def set_max_iterations(self, maxit: int):
@@ -62,8 +61,18 @@ class F3d(Registrator):
         :param moving_image: The path to the moving image file.
         """
         # TODO: reformat names to get identifier but not all uri
-        def_output_path = f"f3d_output_{moving_image}.nii.gz"
-        cpp_path = f"f3d_cpp_{moving_image}.txt"
+        identifier = "".join([ele for ele in moving_image if ele.isdigit()])
+        print("^^^^^^^^^^^^^^^^^")
+        print(f"REGISTRATION STARTED for patient {identifier} (F3D)")
+        print("^^^^^^^^^^^^^^^^^")
+
+        folder = f"output_{identifier}"
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        def_output_path = folder + '/' + f"f3d_output_{identifier}.nii.gz"
+        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}.txt"
+        cpp_path = folder + '/' + f"f3d_cpp_{identifier}.txt"
         parameters = self._param_dict_to_str(self.parameters_dict)
 
         deformable_command = (
@@ -75,7 +84,7 @@ class F3d(Registrator):
             + " -res "
             + def_output_path
             + " -aff "
-            + cpp_path
+            + affine_transform_path
             + " -cpp "
             + cpp_path
             + parameters

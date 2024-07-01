@@ -35,12 +35,11 @@ class Aladin(Registrator):
         super().__init__()
         self.parameters_dict = {
             "rigOnly": True,
-            "floLowThr": "-1000",
-            "refLowThr": "-1000",
-            "floUpThr": "1000",
-            "refUpThr": "100",
-            "pad": "-1000",
-            "maxit": "2",
+            "floLowThr": -1000,
+            "refLowThr": -1000,
+            "floUpThr": 1000,
+            "refUpThr": 100,
+            "pad": -1000,
         }
 
     def set_max_iterations(self, maxit: int):
@@ -66,10 +65,25 @@ class Aladin(Registrator):
         """
         #TODO: print statements
         #TODO: Add destinations
-        aff_output_path = f"ala_output_{moving_image}.nii.gz"
-        affine_transform_path = f"ala_affine_transform_{moving_image}.txt"
+        identifier = "".join([ele for ele in moving_image if ele.isdigit()])
+        print("^^^^^^^^^^^^^^^^^")
+        print(f"REGISTRATION STARTED for patient {identifier} (Aladin)")
+        print("^^^^^^^^^^^^^^^^^")
+
+        folder = f"output_{identifier}"
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+       
+        
+
+        aff_output_path = './' + folder + '/' + f"ala_output_{identifier}.nii.gz"
+        print(aff_output_path)
+        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}.txt"
+        print(affine_transform_path)
         parameters = self._param_dict_to_str(self.parameters_dict)
-        # TODO: put in a folder?
+        print(parameters)
+        print(self.parameters_dict)
 
         affine_command = (
             self.niftyreg_dir

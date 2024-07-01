@@ -58,7 +58,8 @@ class Registrator:
         """
         params = ""
         for param in param_dict:
-            if param_dict[param]:
+            
+            if param_dict[param] and isinstance(param_dict[param], bool):
                 params += " -" + param
             elif isinstance(param_dict[param], str):
                 params += " -" + param + " " + param_dict[param]

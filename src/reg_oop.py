@@ -24,7 +24,8 @@ if __name__ == '__main__':
     y2_imgs = sorted([img for img in imgs if 'Y2' in img])
     patients = list(zip(baseline_imgs, y2_imgs))
 
-    al.register_list(patients)
+    
+    # al.register_list(patients)
     f3d.register_list(patients)
     
     
