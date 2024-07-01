@@ -15,7 +15,7 @@ class Registrator:
         self.parameters_dict = {}
 
         if platform in ("linux", "linux2"):
-            pass
+            self.niftyreg_dir = '~/Downloads/niftk-v18.05.4-ubuntu-14.04-x64/niftk-18.5.4/bin/'
         elif platform == "darwin":
             self.niftyreg_dir = (
                 "/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/"

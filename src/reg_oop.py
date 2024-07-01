@@ -1,5 +1,5 @@
-from pyNiftyReg.aladin import Aladin
-from pyNiftyReg.f3d import F3d
+from pyNiftyReg import Aladin
+from pyNiftyReg import F3d
 
 import os
 

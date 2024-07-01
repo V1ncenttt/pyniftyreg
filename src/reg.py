@@ -1,5 +1,4 @@
 import os 
-#from util import suplementary_functions as sf
 import nibabel as nib
 import numpy as np
 import scipy.ndimage as ndi
@@ -27,11 +26,11 @@ def show_slice_series(img):
 
 
 nifti_dir = ''
-niftyreg_dir = '/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/'
+niftyreg_dir = '/home/vincent/Downloads/niftk-v18.05.4-ubuntu-14.04-x64/niftk-18.5.4/bin/'
 scans_dir = '../data/nii_dataset/'
 # Parameters for the registration
-aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000 -maxit 2'
-dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000 -maxit 2'
+aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000'
+dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000'
 
 
 imgs = list_nii_gz_files(scans_dir)
@@ -59,11 +58,11 @@ for patient in patients:
     cpp_path = 'cpp_%s.nii' % identifier
 
 
-    affine_command = niftyreg_dir + 'reg_aladin -flo ' + target_img + ' -ref ' + source_img + ' -res ' + aff_output_path + ' -aff ' + affine_transform_path + '-rmask' + rmask + '-fmask' + fmask + aff_par
+    affine_command = niftyreg_dir + 'reg_aladin -flo ' + target_img + ' -ref ' + source_img + ' -res ' + aff_output_path + ' -aff ' + affine_transform_path + ' -rmask ' + rmask + ' -fmask ' + fmask + aff_par
     os.system(affine_command)
 
 
-    deformable_command = niftyreg_dir + 'reg_f3d -flo ' + target_img + ' -ref ' + source_img + ' -res ' + def_output_path + ' -aff ' + affine_transform_path +  ' -cpp ' + cpp_path + '-rmask' + rmask + '-fmask' + fmask + dir_par
+    deformable_command = niftyreg_dir + 'reg_f3d -flo ' + target_img + ' -ref ' + source_img + ' -res ' + def_output_path + ' -aff ' + affine_transform_path +  ' -cpp ' + cpp_path + ' -rmask ' + rmask + ' -fmask ' + fmask + dir_par
     os.system(deformable_command)
 
     print('^^^^^^^^^^^^^^^^^')
