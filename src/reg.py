@@ -29,7 +29,7 @@ nifti_dir = ''
 niftyreg_dir = '/home/vincent/Downloads/niftk-v18.05.4-ubuntu-14.04-x64/niftk-18.5.4/bin/'
 scans_dir = '../data/nii_dataset/'
 # Parameters for the registration
-aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000'
+aff_par = ' -rigOnly -floLowThr -1000 -refLowThr -1000 -floUpThr 1000 -refUpThr 100  -pad -1000 -platform cuda'
 dir_par = ' -lncc -ln 5 -lp 4 -vel -pad -1000'
 
 
