@@ -25,12 +25,14 @@ class Transformer:
         """
         resample_command = (
             self.niftyreg_dir
-            + ' reg_resample -ref '
+            + 'reg_resample -ref '
             + ref_image
             + ' -flo '
             + floating_image
             + ' -trans '
             + deformation
+            + ' -res  output_test.nii.gz'
         )
-
+        print(resample_command)
         os.system(resample_command)
+
