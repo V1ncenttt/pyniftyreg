@@ -30,3 +30,4 @@ def show_slice_series(imgs, slicenbs):
 
     plt.tight_layout()
     plt.show()
+

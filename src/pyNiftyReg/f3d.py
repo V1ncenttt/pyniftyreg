@@ -5,7 +5,9 @@ from pyNiftyReg.registrator import Registrator
 class F3d(Registrator):
     """
     A subclass of Registrator for performing image registration
-    using the Fast Free-Form Deformation (F3D) algorithm.
+    using the Fast Free-Form Deformation (F3D) algorithm>
+    From the M. Modat et al. paper:Fast free-form deformation
+    using graphics processing units (2010)
 
     This class provides an interface for setting up and executing
     the F3D registration algorithm, part of the NiftyReg suite. 
@@ -39,6 +41,7 @@ class F3d(Registrator):
             "lp": 4,
             "vel": True,
             "pad": -1000,
+
         }
 
     def set_max_iterations(self, maxit: int):
@@ -90,3 +93,5 @@ class F3d(Registrator):
             + parameters
         )
         os.system(deformable_command)
+
+
