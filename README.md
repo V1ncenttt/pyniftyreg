@@ -91,15 +91,18 @@ Give an example
 Add notes about how to use the system.
 
 ```python 
-import pyniftyreg
+from pyNiftyreg import Aladin, F3d
 
 # Example of using PyNiftyReg for image registration
 fixed_image = 'path/to/fixed_image.nii'
 moving_image = 'path/to/moving_image.nii'
 output_image = 'path/to/output_image.nii'
 
-result = pyniftyreg.register(fixed_image, moving_image, output_image)
-print(f'Registration result: {result}')
+al = Aladin()
+f3d = F3d()
+
+al.register(fixed_image, moving_image)
+f3d.register(fixed_image, moving_image)
 ```
 
 ## ✍️ Authors <a name = "authors"></a>
