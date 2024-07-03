@@ -36,3 +36,18 @@ class Transformer:
         print(resample_command)
         os.system(resample_command)
 
+    def update_sform(self, image: str, deformation: str) -> None:
+        """
+        Updates the sform of an image using a deformation field.
+        :param image: Path to the image.
+        :param deformation: Path to the deformation field.
+        """
+        update_sform_command = (
+            self.niftyreg_dir
+            + 'reg_transform -ref '
+            + image
+            + ' -updSform '
+            + deformation
+        )
+        os.system(update_sform_command)
+        
