@@ -31,12 +31,12 @@ class Transformer:
             + floating_image
             + ' -trans '
             + deformation
-            + ' -res  output_test.nii.gz'
+            + ' -res  output_f3d.nii.gz'
         )
         print(resample_command)
         os.system(resample_command)
 
-    def update_sform(self, image: str, deformation: str) -> None:
+    def update_sform(self, image: str, moving_image, deformation: str, output_loc) -> None:
         """
         Updates the sform of an image using a deformation field.
         :param image: Path to the image.
@@ -47,7 +47,11 @@ class Transformer:
             + 'reg_transform -ref '
             + image
             + ' -updSform '
+            + moving_image
+            + ' '
             + deformation
+            + ' '
+            + output_loc
         )
         os.system(update_sform_command)
-        
+

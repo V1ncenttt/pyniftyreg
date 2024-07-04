@@ -1,8 +1,30 @@
 from pyNiftyReg import Transformer
+import os
+
+def list_nii_gz_files(directory):
+    nii_gz_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".nii.gz"):
+                nii_gz_files.append(os.path.join(root, file))
+    return nii_gz_files
 
 if __name__ == "__main__":
+    segs_dir = '../data/segmentations/'
+    segs = list_nii_gz_files(segs_dir)
+    baseline_segs = sorted([seg for seg in segs if 'Y0' in seg])
+    y2_segs = sorted([seg for seg in segs if 'Y2' in seg])
+    patients = list(zip(baseline_segs, y2_segs))
+
     transformer = Transformer()
-    fixed = '../data/nii_dataset/nii_dataset/summit-2455-xab_Y0_BASELINE_A.nii.gz'
-    moving = '../data/nii_dataset/nii_dataset/summit-2455-xab_Y2.nii.gz'
-    deformation = 'output_24552/ala_affine_transform_24552.txt'
-    transformer.resample(fixed, moving, deformation)
+
+    for patient in patients:
+
+        identifier = "".join([ele for ele in patient[0] if ele.isdigit()])
+        fixed = patient[0]
+        moving = patient[1]
+        aff_deformation = ('output_%s/ala_affine_transform_%s.txt' % (identifier, identifier)).replace('0', '2')
+        f3d_def = ('output_%s/f3d_cpp_%s.nii' % (identifier, identifier)).replace('0', '2')
+        output_name = ('output_%s/updated_sform_seg_%s.nii.gz' % (identifier, identifier)).replace('0', '2')
+        transformer.update_sform(fixed, moving, aff_deformation, output_name)
+    
