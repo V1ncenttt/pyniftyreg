@@ -41,13 +41,11 @@ Whether you're working on registring medical scans, performing image analysis, o
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 What things you need to install the software and how to install them.
 
-```
+```python
 Give examples
 ```
 
@@ -57,13 +55,13 @@ A step by step series of examples that tell you how to get a development env run
 
 Say what the step will be
 
-```
+```python
 Give the example
 ```
 
 And repeat
 
-```
+```python
 until finished
 ```
 
@@ -88,10 +86,11 @@ f3d = F3d()
 al.register(fixed_image, moving_image)
 f3d.register(fixed_image, moving_image)
 ```
+
 You can also use pyNiftyReg to transform images using deformation fields, and multipy/add/divide images together.
+
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@V1ncenttt](https://github.com/V1ncenttt) - Initial work
 
 See also the list of [contributors](https://github.com/V1ncenttt/cmic_registeration/contributors) who participated in this project.
-
