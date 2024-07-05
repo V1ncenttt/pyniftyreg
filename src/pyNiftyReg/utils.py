@@ -2,6 +2,7 @@ import nibabel as nib
 import numpy as np
 import scipy.ndimage as ndi
 import matplotlib.pyplot as plt
+from skimage import morphology, measure
 
 def show_slice(img, slicenb):
     vol = nib.load(img)
@@ -30,4 +31,23 @@ def show_slice_series(imgs, slicenbs):
 
     plt.tight_layout()
     plt.show()
+
+def load_volume(img):
+    vol = nib.load(img)
+    vol_data = vol.get_fdata()
+    return vol_data
+
+def skeletonise(segmentation):
+    skeleton = morphology.skeletonize(segmentation, method='lee')
+    return skeleton
+
+def visualise_skeleton(skeleton):
+    contours = measure.find_contours(skeleton, 0.5)
+    fig, ax = plt.subplots()
+    ax.imshow(skeleton[100,:,:], cmap=plt.cm.gray)
+
+    for contour in contours:
+        ax.plot(contour[:, 1], contour[:, 0], linewidth=2)
+    plt.show()
+
 
