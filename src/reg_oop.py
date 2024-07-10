@@ -16,17 +16,16 @@ if __name__ == '__main__':
     al = Aladin()
     f3d = F3d()
 
-    niftyreg_dir = '/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/'
     scans_dir = '../data/nii_dataset/'
 
     imgs = list_nii_gz_files(scans_dir)
     baseline_imgs = sorted([img for img in imgs if 'Y0' in img])
     y2_imgs = sorted([img for img in imgs if 'Y2' in img])
     patients = list(zip(baseline_imgs, y2_imgs))
-    print(patients)
+ 
     
     # al.register_list(patients)
-    f3d.register_list(patients)
+    al.register_list(patients)
     
     
 

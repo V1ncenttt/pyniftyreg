@@ -24,7 +24,7 @@ if __name__ == "__main__":
         fixed = patient[0]
         moving = patient[1]
         aff_deformation = ('output_%s/ala_affine_transform_%s.txt' % (identifier, identifier)).replace('0', '2')
-        f3d_def = ('output_%s/f3d_cpp_%s.nii' % (identifier, identifier)).replace('0', '2')
-        output_name = ('output_%s/updated_sform_seg_%s.nii.gz' % (identifier, identifier)).replace('0', '2')
-        transformer.update_sform(fixed, moving, aff_deformation, output_name)
+        f3d_def = ('output_%s/f3d_cpp_%s.txt.nii' % (identifier, identifier)).replace('0', '2')
+        output_name = ('output_%s/updated_sform_seg_f3d_%s.nii.gz' % (identifier, identifier)).replace('0', '2')
+        transformer.update_sform(fixed, moving, f3d_def, output_name)
     

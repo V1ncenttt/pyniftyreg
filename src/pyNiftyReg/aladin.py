@@ -1,6 +1,7 @@
 import os
 from pyNiftyReg.registrator import Registrator
-
+import shlex
+import subprocess
 
 class Aladin(Registrator):
     """
@@ -74,27 +75,23 @@ class Aladin(Registrator):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-       
-        
-
         aff_output_path = './' + folder + '/' + f"ala_output_{identifier}.nii.gz"
-        print(aff_output_path)
         affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}.txt"
-        print(affine_transform_path)
         parameters = self._param_dict_to_str(self.parameters_dict)
-        print(parameters)
-        print(self.parameters_dict)
+       
 
-        affine_command = (
-            self.niftyreg_dir
-            + "reg_aladin -flo "
-            + moving_image
-            + " -ref "
-            + fixed_image
-            + " -res "
-            + aff_output_path
-            + " -aff "
-            + affine_transform_path
-            + parameters
-        )
-        os.system(affine_command)
+        command = [
+            os.path.join(self.niftyreg_dir, "reg_aladin"),
+            "-flo", moving_image,
+            "-ref", fixed_image,
+            "-res", aff_output_path,
+            "-aff", affine_transform_path
+        ] + shlex.split(parameters)
+
+        print("Executing command:", " ".join(command))
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        print(stdout.decode())
+        if stderr:
+            print("Errors:", stderr.decode())

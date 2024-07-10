@@ -3,14 +3,7 @@ import os
 
 class Operator:
     def __init__(self, *args, **kwargs):
-        if platform in ("linux", "linux2"):
-            self.niftyreg_dir = '~/Downloads/niftk-v18.05.4-ubuntu-14.04-x64/niftk-18.5.4/bin/'
-        elif platform == "darwin":
-            self.niftyreg_dir = (
-                "/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/"
-            )
-        elif platform == "win32":
-            pass
+        self.niftyreg_dir = '../niftk-18.5.4/bin'
 
 
     def multiply(self, img1, img2, output_name=None):

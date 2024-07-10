@@ -13,15 +13,7 @@ class Registrator:
         Initializes the Registrator class, setting up the environment based on the operating system.
         """
         self.parameters_dict = {}
-
-        if platform in ("linux", "linux2"):
-            self.niftyreg_dir = '~/Downloads/niftk-v18.05.4-ubuntu-14.04-x64/niftk-18.5.4/bin/'
-        elif platform == "darwin":
-            self.niftyreg_dir = (
-                "/Applications/niftk-18.5.4/NiftyView.app/Contents/MacOS/"
-            )
-        elif platform == "win32":
-            pass
+        self.niftyreg_dir = '../niftk-18.5.4/bin'
 
     def set_niftyreg_dir(self, niftyreg_dir: str):
         """
