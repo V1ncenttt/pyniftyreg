@@ -3,14 +3,14 @@ import os
 
 class Transformer:
     def __init__(self) -> None:
-        self.niftyreg_dir = '../niftk-18.5.4/bin'
+        self.niftyreg_dir = '../niftk-18.5.4/bin/'
 
 
 
     def transform(self, fixed_image, moving_image, deformation):
         raise NotImplementedError
     
-    def resample(self, ref_image: str, floating_image: str, deformation: str) -> None:
+    def resample(self, ref_image: str, floating_image: str, deformation: str, output_name: str) -> None:
         """
         Resamples an image using a deformation field.
         :param ref_image: Path to the reference image.
@@ -25,7 +25,8 @@ class Transformer:
             + floating_image
             + ' -trans '
             + deformation
-            + ' -res  output_f3d.nii.gz'
+            + ' -res '
+            + output_name
         )
         print(resample_command)
         os.system(resample_command)
