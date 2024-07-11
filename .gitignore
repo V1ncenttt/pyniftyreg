@@ -3,14 +3,21 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Miscellaneous
 *.zip
 data/dataset/
 data/nii_dataset/
-# C extensions
+niftk-18.5.4/
+
+
+# C and CT extensions
 *.so
 *.txt
 *.nii
 *.nii.gz
+*.mhd
+*.zraw
+
 
 # Distribution / packaging
 .Python
