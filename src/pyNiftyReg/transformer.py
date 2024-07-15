@@ -48,5 +48,6 @@ class Transformer:
             + ' '
             + output_loc
         )
+        print(update_sform_command)
         os.system(update_sform_command)
 

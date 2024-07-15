@@ -8,7 +8,7 @@ __pycache__/
 data/dataset/
 data/nii_dataset/
 niftk-18.5.4/
-
+test.py
 
 # C and CT extensions
 *.so

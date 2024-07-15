@@ -75,8 +75,8 @@ class Aladin(Registrator):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        aff_output_path = './' + folder + '/' + f"ala_output_{identifier}.nii.gz"
-        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}.txt"
+        aff_output_path = './' + folder + '/' + f"ala_output_{identifier}_reversed.nii.gz"
+        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}_reversed.txt"
         parameters = self._param_dict_to_str(self.parameters_dict)
        
 

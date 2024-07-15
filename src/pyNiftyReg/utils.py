@@ -3,6 +3,7 @@ import numpy as np
 import scipy.ndimage as ndi
 import matplotlib.pyplot as plt
 from skimage import morphology, measure
+import scipy
 
 def show_slice(img, slicenb):
     vol = nib.load(img)
@@ -49,5 +50,16 @@ def visualise_skeleton(skeleton):
     for contour in contours:
         ax.plot(contour[:, 1], contour[:, 0], linewidth=2)
     plt.show()
+
+def dice_coef(image1, image2):
+    img1 = nib.load(image1).get_fdata()
+    img2 = nib.load(image2).get_fdata()
+    img1 = img1.flatten()
+    img2 = img2.flatten()
+
+    return 1 - scipy.spatial.distance.dice(img1, img2)
+
+
+
 
 
