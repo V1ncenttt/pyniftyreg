@@ -1,15 +1,9 @@
 from pyNiftyReg import Aladin
 from pyNiftyReg import F3d
-
+from pyNiftyReg.utils import list_nii_gz_files
 import os
 
-def list_nii_gz_files(directory):
-    nii_gz_files = []
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.endswith(".nii.gz"):
-                nii_gz_files.append(os.path.join(root, file))
-    return nii_gz_files
+
 
 if __name__ == '__main__':
     

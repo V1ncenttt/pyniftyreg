@@ -10,6 +10,7 @@ def list_nii_gz_files(directory):
     return nii_gz_files
 
 if __name__ == "__main__":
+    
     segs_dir = '../data/segmentations/'
     segs = list_nii_gz_files(segs_dir)
     baseline_segs = sorted([seg for seg in segs if 'Y0' in seg])
@@ -25,6 +26,6 @@ if __name__ == "__main__":
         moving = patient[1]
         aff_deformation = ('output_%s/ala_affine_transform_%s.txt' % (identifier, identifier)).replace('0', '2')
         f3d_def = ('output_%s/f3d_cpp_%s.txt.nii' % (identifier, identifier)).replace('0', '2')
-        output_name = ('output_%s/updated_sform_seg_ala_%s.nii.gz' % (identifier, identifier)).replace('0', '2')
-        transformer.update_sform(fixed, moving, aff_deformation, output_name)
+        output_name = ('output_%s/updated_resampled_seg_f3d_%s.nii.gz' % (identifier, identifier)).replace('0', '2')
+        transformer.resample(fixed, moving, f3d_def, output_name)
         
