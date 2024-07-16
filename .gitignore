@@ -10,6 +10,12 @@ data/nii_dataset/
 niftk-18.5.4/
 test.py
 
+*.vtu
+*.h5
+*.xdmf
+*.xml.gz
+*.pvd
+*.json
 # C and CT extensions
 *.so
 *.txt
