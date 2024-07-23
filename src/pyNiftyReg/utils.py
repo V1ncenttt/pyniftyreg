@@ -70,6 +70,15 @@ def list_nii_gz_files(directory):
                 nii_gz_files.append(os.path.join(root, file))
     return nii_gz_files
 
+def dilate(segmentation, iterations=1):
+    dilated = morphology.binary_dilation(segmentation, iterations=iterations)
+    return dilated
+
+def erode(segmentation, iterations=1):
+    eroded = morphology.binary_erosion(segmentation, iterations=iterations)
+    return eroded
+
+
 
 
 
