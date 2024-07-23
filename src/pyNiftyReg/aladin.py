@@ -3,6 +3,7 @@ from pyNiftyReg.registrator import Registrator
 import shlex
 import subprocess
 
+
 class Aladin(Registrator):
     """
     A subclass of Registrator for performing image registration
@@ -30,7 +31,7 @@ class Aladin(Registrator):
 
     def __init__(self):
         """
-        Initializes a new instance of the Aladin class 
+        Initializes a new instance of the Aladin class
         with default parameters for the registration process.
         """
         super().__init__()
@@ -64,8 +65,8 @@ class Aladin(Registrator):
         :param fixed_image: The path to the fixed image file.
         :param moving_image: The path to the moving image file.
         """
-        #TODO: print statements
-        #TODO: Add destinations
+        # TODO: print statements
+        # TODO: Add destinations
         identifier = "".join([ele for ele in moving_image if ele.isdigit()])
         print("^^^^^^^^^^^^^^^^^")
         print(f"REGISTRATION STARTED for patient {identifier} (Aladin)")
@@ -75,21 +76,30 @@ class Aladin(Registrator):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        aff_output_path = './' + folder + '/' + f"ala_output_{identifier}_reversed.nii.gz"
-        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}_reversed.txt"
+        aff_output_path = (
+            "./" + folder + "/" + f"ala_output_{identifier}_reversed.nii.gz"
+        )
+        affine_transform_path = (
+            "./" + folder + "/" + f"ala_affine_transform_{identifier}_reversed.txt"
+        )
         parameters = self._param_dict_to_str(self.parameters_dict)
-       
 
         command = [
             os.path.join(self.niftyreg_dir, "reg_aladin"),
-            "-flo", moving_image,
-            "-ref", fixed_image,
-            "-res", aff_output_path,
-            "-aff", affine_transform_path
+            "-flo",
+            moving_image,
+            "-ref",
+            fixed_image,
+            "-res",
+            aff_output_path,
+            "-aff",
+            affine_transform_path,
         ] + shlex.split(parameters)
 
         print("Executing command:", " ".join(command))
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         stdout, stderr = process.communicate()
 
         print(stdout.decode())

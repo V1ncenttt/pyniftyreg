@@ -10,7 +10,7 @@ class F3d(Registrator):
     using graphics processing units (2010)
 
     This class provides an interface for setting up and executing
-    the F3D registration algorithm, part of the NiftyReg suite. 
+    the F3D registration algorithm, part of the NiftyReg suite.
     It allows for the configuration of various parameters specific to the F3D algorithm
     and executes the registration process by constructing a command
     line command and executing it in the system's shell.
@@ -23,7 +23,7 @@ class F3d(Registrator):
     Methods:
         __init__: Initializes a new instance of the F3d class, setting up
         default parameters for the registration.
-        set_max_iterations(maxit: int): Sets the maximum number of iterations 
+        set_max_iterations(maxit: int): Sets the maximum number of iterations
         for the registration algorithm.
         register(fixed_image: str, moving_image: str): Executes the F3D registration algorithm
         with the configured parameters on the specified fixed and moving images.
@@ -41,7 +41,6 @@ class F3d(Registrator):
             "lp": 4,
             "vel": True,
             "pad": -1000,
-
         }
 
     def set_max_iterations(self, maxit: int):
@@ -73,9 +72,11 @@ class F3d(Registrator):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        def_output_path = folder + '/' + f"f3d_output_{identifier}.nii.gz"
-        affine_transform_path = './' + folder + '/' + f"ala_affine_transform_{identifier}.txt"
-        cpp_path = folder + '/' + f"f3d_cpp_{identifier}.txt"
+        def_output_path = folder + "/" + f"f3d_output_{identifier}.nii.gz"
+        affine_transform_path = (
+            "./" + folder + "/" + f"ala_affine_transform_{identifier}.txt"
+        )
+        cpp_path = folder + "/" + f"f3d_cpp_{identifier}.txt"
         parameters = self._param_dict_to_str(self.parameters_dict)
 
         deformable_command = (
@@ -93,5 +94,3 @@ class F3d(Registrator):
             + parameters
         )
         os.system(deformable_command)
-
-

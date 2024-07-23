@@ -13,7 +13,7 @@ class Registrator:
         Initializes the Registrator class, setting up the environment based on the operating system.
         """
         self.parameters_dict = {}
-        self.niftyreg_dir = '../niftk-18.5.4/bin'
+        self.niftyreg_dir = "../niftk-18.5.4/bin"
 
     def set_niftyreg_dir(self, niftyreg_dir: str):
         """
@@ -50,7 +50,7 @@ class Registrator:
         """
         params = ""
         for param in param_dict:
-            
+
             if param_dict[param] and isinstance(param_dict[param], bool):
                 params += " -" + param
             elif isinstance(param_dict[param], str):
