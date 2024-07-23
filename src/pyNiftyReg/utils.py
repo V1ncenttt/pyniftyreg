@@ -3,6 +3,7 @@ import numpy as np
 import scipy.ndimage as ndi
 import matplotlib.pyplot as plt
 from skimage import morphology, measure
+from scipy.ndimage import binary_dilation, binary_erosion
 import scipy
 import os
 
@@ -78,10 +79,10 @@ def list_nii_gz_files(directory):
 
 
 def dilate(segmentation, iterations=1):
-    dilated = morphology.binary_dilation(segmentation, iterations=iterations)
+    dilated = binary_dilation(segmentation, iterations=iterations)
     return dilated
 
 
 def erode(segmentation, iterations=1):
-    eroded = morphology.binary_erosion(segmentation, iterations=iterations)
+    eroded = binary_erosion(segmentation, iterations=iterations)
     return eroded
