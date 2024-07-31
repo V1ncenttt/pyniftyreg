@@ -8,7 +8,7 @@ if __name__ == '__main__':
     y2_segs = sorted([seg for seg in segs if "Y2" in seg])
     patients = list(zip(baseline_segs, y2_segs))
 
-    original_nifti = nib.load('../data/nii_dataset/1')
+    original_nifti = nib.load('../data/segmentations/summit-2455-xab_Y2_airway.nii.gz')
     original_affine = original_nifti.affine
 
     for patient in patients:
@@ -24,13 +24,14 @@ if __name__ == '__main__':
             if not seg.startswith('../'):
                 output_name = seg.split('.')[0] + '_dilated_%s.nii.gz' % ITERS
             else:
-                output_name = segs_dir + seg.split('/')[-1].split('.')[0] + '_dilated_%s.nii.gz' % ITERS
+                output_name = seg.split('/')[-1].split('.')[0] + '_dilated_%s.nii.gz' % ITERS
 
             print(seg)
             print(output_name)
             print('---')
 
             vol = load_volume(seg)
+            aff = nib.load(seg).affine
             dilated_vol = dilate(vol, iterations=ITERS)
-            nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), np.eye(4)), output_name)
+            nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), aff), output_name)
                                  
