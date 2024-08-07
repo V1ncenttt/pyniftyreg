@@ -2,6 +2,13 @@ from pyNiftyReg.utils import *
 ITERS  = 3
 
 if __name__ == '__main__':
+    seg = 'y0_inter_clean_resampled.nii.gz'
+    output_name = seg.split('.')[0] + '_dilated_%s.nii.gz' % ITERS
+    vol = load_volume(seg)
+    aff = nib.load(seg).affine
+    dilated_vol = dilate(vol, iterations=ITERS)
+    nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), aff), output_name)
+    '''
     segs_dir = "../data/segmentations/"
     segs = list_nii_gz_files(segs_dir)
     baseline_segs = sorted([seg for seg in segs if "Y0" in seg])
@@ -10,7 +17,7 @@ if __name__ == '__main__':
 
     original_nifti = nib.load('../data/segmentations/summit-2455-xab_Y2_airway.nii.gz')
     original_affine = original_nifti.affine
-
+    
     for patient in patients:
         identifier = "".join([ele for ele in patient[0] if ele.isdigit()])[:-1]
 
@@ -35,3 +42,4 @@ if __name__ == '__main__':
             dilated_vol = dilate(vol, iterations=ITERS)
             nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), aff), output_name)
                                  
+        '''

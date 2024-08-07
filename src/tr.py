@@ -20,8 +20,12 @@ if __name__ == "__main__":
     patients = list(zip(baseline_segs, y2_segs))
 
     transformer = Transformer()
-
+    defo = "output_24552/f3d_cpp_24552.txt_backward.nii"
+    transformer.resample('y2_inter_cleaned.nii.gz', 'y0_inter_cleaned.nii.gz', defo, 'y0_inter_clean_resampled.nii.gz')
+    """
     for patient in patients:
+
+        
         print("---")
         identifier = "".join([ele for ele in patient[0] if ele.isdigit()])
         fixed = patient[0]
@@ -36,3 +40,4 @@ if __name__ == "__main__":
             "output_%s/updated_resampled_seg_f3d_%s.nii.gz" % (identifier, identifier)
         ).replace("0", "2")
         transformer.resample(fixed, moving, f3d_def, output_name)
+        """
