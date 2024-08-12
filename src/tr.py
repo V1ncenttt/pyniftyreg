@@ -20,8 +20,8 @@ if __name__ == "__main__":
     patients = list(zip(baseline_segs, y2_segs))
 
     transformer = Transformer()
-    defo = "output_24552/f3d_cpp_24552.txt_backward.nii"
-    transformer.resample('y2_inter_cleaned.nii.gz', 'y0_inter_cleaned.nii.gz', defo, 'y0_inter_clean_resampled.nii.gz')
+    defo = "output_24552/f3d_cpp_24552.txt.nii"
+    transformer.resample('y0_inter_cleaned.nii.gz', 'y2_inter_cleaned.nii.gz', defo, 'y2_inter_clean_resampled.nii.gz')
     """
     for patient in patients:
 

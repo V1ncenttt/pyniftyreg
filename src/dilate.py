@@ -2,7 +2,7 @@ from pyNiftyReg.utils import *
 ITERS  = 3
 
 if __name__ == '__main__':
-    seg = 'y0_inter_clean_resampled.nii.gz'
+    seg = 'y2_inter_clean_resampled.nii.gz'
     output_name = seg.split('.')[0] + '_dilated_%s.nii.gz' % ITERS
     vol = load_volume(seg)
     aff = nib.load(seg).affine
