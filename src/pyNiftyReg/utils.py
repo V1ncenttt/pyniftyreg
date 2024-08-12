@@ -115,3 +115,10 @@ def clean_seg(seg_path, output_path):
     nib.save(new_img, output_path)
 
     print(f"Largest connected component saved to {output_path}")
+
+def compute_volume(vol, nb):
+    
+    voxel_size = vol.header.get_zooms()
+    vol_data = vol.get_fdata()
+    
+    return np.sum(vol_data == nb) * np.prod(voxel_size)
