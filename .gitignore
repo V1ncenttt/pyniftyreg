@@ -23,7 +23,7 @@ test.py
 *.nii.gz
 *.mhd
 *.zraw
-*.xslx
+*.xlsx
 *.csv
 *.xml
 
