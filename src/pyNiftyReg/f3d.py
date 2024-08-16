@@ -1,3 +1,22 @@
+"""
+A module for performing image registration using the Fast Free-Form Deformation (F3D) algorithm.
+
+This module provides a class, `F3d`, which is a subclass of `Registrator` and serves as an interface
+for setting up and executing the F3D registration algorithm. It allows for the configuration
+of various parameters specific to the F3D algorithm and executes the registration process
+by constructing a command
+
+    parameters_dict (dict): A dictionary holding the parameters for the F3D registration process.
+
+    __init__: Initializes a new instance of the F3d class, setting up default parameters
+    for the registration.
+    set_max_iterations(maxit: int): Sets the maximum number of iterations for the
+    registration algorithm.
+    register(fixed_image: str, moving_image: str): Executes the F3D registration algorithm
+    with the configured parameters on the specified fixed and moving images.
+
+"""
+
 import os
 from pyNiftyReg.registrator import Registrator
 
@@ -63,6 +82,7 @@ class F3d(Registrator):
         :param moving_image: The path to the moving image file.
         """
         # TODO: reformat names to get identifier but not all uri
+
         identifier = "".join([ele for ele in moving_image if ele.isdigit()])
         print("^^^^^^^^^^^^^^^^^")
         print(f"REGISTRATION STARTED for patient {identifier} (F3D)")

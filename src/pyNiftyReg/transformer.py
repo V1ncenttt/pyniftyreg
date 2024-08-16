@@ -1,9 +1,20 @@
-from sys import platform
+"""
+Module: transformer.py
+
+This module provides a class for transforming images using NiftyReg.
+
+Author: Vincent Lefeuve
+
+Classes:
+- Transformer: A class for transforming images using NiftyReg.
+"""
+
+# from sys import platform
 import os
 
 
 class Transformer:
-    """ 
+    """
     Class for transforming images using NiftyReg.
     """
 
@@ -12,7 +23,8 @@ class Transformer:
 
     def transform(self, fixed_image, moving_image, deformation):
         """
-        Apply a transformation to a volume. Abstract method that should be implemented by subclasses.
+        Apply a transformation to a volume.
+        Abstract method that should be implemented by subclasses.
         :param fixed_image: Path to the fixed image.
         :param moving_image: Path to the moving image.
         :param deformation: Path to the deformation field.
