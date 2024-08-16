@@ -57,6 +57,19 @@ class AirwaySegmentRematcher:
         return matches
 
 
+def apply_matching(segmentation, matches):
+    """
+    Apply the matching to a segmentation.
+    :param segmentation: Segmentation to apply the matching to.
+    :param matches: Matching to apply.
+    :return: Rematched segmentation.
+    """
+    rematched_segmentation = np.zeros_like(segmentation)
+    
+    for label1, label2 in matches.items():
+        rematched_segmentation[segmentation == label1] = label2
+    
+    return rematched_segmentation
 
 def find_centroid(binary_volume):
     # Ensure the input is a numpy array
