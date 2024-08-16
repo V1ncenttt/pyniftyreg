@@ -10,7 +10,12 @@ class Transformer:
         raise NotImplementedError
 
     def resample(
-        self, ref_image: str, floating_image: str, deformation: str, output_name: str, interpolation_order:int = 0
+        self,
+        ref_image: str,
+        floating_image: str,
+        deformation: str,
+        output_name: str,
+        interpolation_order: int = 0,
     ) -> None:
         """
         Resamples an image using a deformation field.

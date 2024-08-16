@@ -1,14 +1,15 @@
 from pyNiftyReg.utils import *
-ITERS  = 3
 
-if __name__ == '__main__':
-    seg = 'y2_inter_clean_resampled.nii.gz'
-    output_name = seg.split('.')[0] + '_dilated_%s.nii.gz' % ITERS
+ITERS = 3
+
+if __name__ == "__main__":
+    seg = "y2_inter_clean_resampled.nii.gz"
+    output_name = seg.split(".")[0] + "_dilated_%s.nii.gz" % ITERS
     vol = load_volume(seg)
     aff = nib.load(seg).affine
     dilated_vol = dilate(vol, iterations=ITERS)
     nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), aff), output_name)
-    '''
+    """
     segs_dir = "../data/segmentations/"
     segs = list_nii_gz_files(segs_dir)
     baseline_segs = sorted([seg for seg in segs if "Y0" in seg])
@@ -42,4 +43,4 @@ if __name__ == '__main__':
             dilated_vol = dilate(vol, iterations=ITERS)
             nib.save(nib.Nifti1Image(dilated_vol.astype(np.int32), aff), output_name)
                                  
-        '''
+        """

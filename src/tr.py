@@ -21,7 +21,12 @@ if __name__ == "__main__":
 
     transformer = Transformer()
     defo = "output_24552/f3d_cpp_24552.txt_backward.nii"
-    transformer.resample('y2_final_clean_2455_coloured_airway_refactored_all.nii.gz', 'y0_final_clean_2455_coloured_airway_refactored_all.nii.gz', defo, 'y0_labeled_resampled.nii.gz')
+    transformer.resample(
+        "y2_final_clean_2455_coloured_airway_refactored_all.nii.gz",
+        "y0_final_clean_2455_coloured_airway_refactored_all.nii.gz",
+        defo,
+        "y0_labeled_resampled.nii.gz",
+    )
     """
     for patient in patients:
 

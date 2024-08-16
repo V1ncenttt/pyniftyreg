@@ -8,7 +8,19 @@ import scipy
 import os
 from scipy.ndimage import label
 
-def show_slice(img, slicenb):
+
+def show_slice(img: str, slicenb: int) -> None:
+    """
+    Display a single slice from a NIfTI image.
+
+    Parameters:
+    img (str): Path to the NIfTI image file.
+    slicenb (int): Slice number to display.
+
+    Returns:
+    None
+    """
+
     vol = nib.load(img)
     vol_data = vol.get_fdata()
     plt.imshow(ndi.rotate(vol_data[slicenb], 90), cmap="bone")
@@ -16,7 +28,18 @@ def show_slice(img, slicenb):
     plt.show()
 
 
-def show_slice_series(imgs, slicenbs):
+def show_slice_series(imgs: list, slicenbs: list) -> None:
+    """
+    Display a series of slices from multiple NIfTI images.
+
+    Parameters:
+    imgs (list of str): List of paths to NIfTI image files.
+    slicenbs (list of int): List of slice numbers to display for each image.
+
+    Returns:
+    None
+    """
+
     num_slices = len(slicenbs)
     rows = (num_slices + 3) // 4
 
@@ -38,18 +61,48 @@ def show_slice_series(imgs, slicenbs):
     plt.show()
 
 
-def load_volume(img):
+def load_volume(img: str) -> np.ndarray:
+    """
+    Load a NIfTI image and return its data.
+
+    Parameters:
+    img (str): Path to the NIfTI image file.
+
+    Returns:
+    numpy.ndarray: The image data.
+    """
+
     vol = nib.load(img)
     vol_data = vol.get_fdata()
     return vol_data
 
 
-def skeletonise(segmentation):
+def skeletonise(segmentation: np.ndarray) -> np.ndarray:
+    """
+    Perform skeletonization on a binary segmentation.
+
+    Parameters:
+    segmentation (numpy.ndarray): Binary segmentation image.
+
+    Returns:
+    numpy.ndarray: Skeletonized image.
+    """
+
     skeleton = morphology.skeletonize(segmentation, method="lee")
     return skeleton
 
 
-def visualise_skeleton(skeleton):
+def visualise_skeleton(skeleton: np.ndarray) -> None:
+    """
+    Visualize the skeleton of a binary image.
+
+    Parameters:
+    skeleton (numpy.ndarray): Skeletonized binary image.
+
+    Returns:
+    None
+    """
+
     contours = measure.find_contours(skeleton, 0.5)
     fig, ax = plt.subplots()
     ax.imshow(skeleton[100, :, :], cmap=plt.cm.gray)
@@ -59,17 +112,38 @@ def visualise_skeleton(skeleton):
     plt.show()
 
 
-def dice_coef(image1, image2):
+def dice_coef(image1: str, image2: str) -> float:
+    """
+    Compute the Dice coefficient between two NIfTI images.
+
+    Parameters:
+    image1 (str): Path to the first NIfTI image file.
+    image2 (str): Path to the second NIfTI image file.
+
+    Returns:
+    float: Dice coefficient.
+    """
+
     img1 = nib.load(image1).get_fdata()
     img2 = nib.load(image2).get_fdata()
-    
+
     img1 = img1.flatten()
     img2 = img2.flatten()
 
     return 1 - scipy.spatial.distance.dice(img1, img2)
 
 
-def list_nii_gz_files(directory):
+def list_nii_gz_files(directory: str) -> list:
+    """
+    List all .nii.gz files in a directory and its subdirectories.
+
+    Parameters:
+    directory (str): Path to the directory.
+
+    Returns:
+    list of str: List of paths to .nii.gz files.
+    """
+
     nii_gz_files = []
     for root, dirs, files in os.walk(directory):
         for file in files:
@@ -78,16 +152,50 @@ def list_nii_gz_files(directory):
     return nii_gz_files
 
 
-def dilate(segmentation, iterations=1):
+def dilate(segmentation: np.ndarray, iterations: int = 1) -> np.ndarray:
+    """
+    Perform binary dilation on a segmentation image.
+
+    Parameters:
+    segmentation (numpy.ndarray): Binary segmentation image.
+    iterations (int): Number of dilation iterations.
+
+    Returns:
+    numpy.ndarray: Dilated image.
+    """
+
     dilated = binary_dilation(segmentation, iterations=iterations)
     return dilated
 
 
-def erode(segmentation, iterations=1):
+def erode(segmentation: np.ndarray, iterations: int = 1) -> np.ndarray:
+    """
+    Perform binary erosion on a segmentation image.
+
+    Parameters:
+    segmentation (numpy.ndarray): Binary segmentation image.
+    iterations (int): Number of erosion iterations.
+
+    Returns:
+    numpy.ndarray: Eroded image.
+    """
+
     eroded = binary_erosion(segmentation, iterations=iterations)
     return eroded
 
-def clean_seg(seg_path, output_path):
+
+def clean_seg(seg_path: str, output_path: str) -> None:
+    """
+    Clean a segmentation by keeping only the largest connected component.
+
+    Parameters:
+    seg_path (str): Path to the input NIfTI segmentation file.
+    output_path (str): Path to save the cleaned segmentation file.
+
+    Returns:
+    None
+    """
+
     # Load the NIfTI file
     img = nib.load(seg_path)
     data = img.get_fdata()
@@ -116,9 +224,20 @@ def clean_seg(seg_path, output_path):
 
     print(f"Largest connected component saved to {output_path}")
 
-def compute_volume(vol, nb):
-    
+
+def compute_volume(vol: nib.Nifti1Image, nb: int) -> float:
+    """
+    Compute the volume of a specific label in a NIfTI image.
+
+    Parameters:
+    vol (nibabel.Nifti1Image): NIfTI image object.
+    nb (int): Label number to compute the volume for.
+
+    Returns:
+    float: Volume of the specified label in cubic millimeters.
+    """
+
     voxel_size = vol.header.get_zooms()
     vol_data = vol.get_fdata()
-    
+
     return np.sum(vol_data == nb) * np.prod(voxel_size)

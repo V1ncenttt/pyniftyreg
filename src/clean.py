@@ -3,7 +3,7 @@ import numpy as np
 from scipy.ndimage import label
 
 # Load the NIfTI file
-nifti_path = 'y0_final.nii.gz'
+nifti_path = "y0_final.nii.gz"
 img = nib.load(nifti_path)
 data = img.get_fdata()
 
@@ -27,9 +27,7 @@ largest_component_volume = (labeled_array == largest_component).astype(np.int32)
 
 # Save the new volume as a NIfTI file
 new_img = nib.Nifti1Image(largest_component_volume, img.affine, img.header)
-output_path = 'y0_final_clean.nii.gz'
+output_path = "y0_final_clean.nii.gz"
 nib.save(new_img, output_path)
 
 print(f"Largest connected component saved to {output_path}")
-
-
