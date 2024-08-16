@@ -1,3 +1,4 @@
+import os
 import nibabel as nib
 import numpy as np
 import scipy.ndimage as ndi
@@ -5,7 +6,6 @@ import matplotlib.pyplot as plt
 from skimage import morphology, measure
 from scipy.ndimage import binary_dilation, binary_erosion
 import scipy
-import os
 from scipy.ndimage import label
 
 

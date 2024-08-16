@@ -3,10 +3,21 @@ import os
 
 
 class Transformer:
+    """ 
+    Class for transforming images using NiftyReg.
+    """
+
     def __init__(self) -> None:
         self.niftyreg_dir = "../niftk-18.5.4/bin/"
 
     def transform(self, fixed_image, moving_image, deformation):
+        """
+        Apply a transformation to a volume. Abstract method that should be implemented by subclasses.
+        :param fixed_image: Path to the fixed image.
+        :param moving_image: Path to the moving image.
+        :param deformation: Path to the deformation field.
+        :return: None
+        """
         raise NotImplementedError
 
     def resample(
