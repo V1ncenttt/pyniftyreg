@@ -23,7 +23,9 @@ test.py
 *.nii.gz
 *.mhd
 *.zraw
-
+*.xslx
+*.csv
+*.xml
 
 # Distribution / packaging
 .Python
