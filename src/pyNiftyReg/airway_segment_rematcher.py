@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.spatial.distance import cdist
-
+import nibabel as nib
+import matplotlib.pyplot as plt
 class AirwaySegmentRematcher:
 
     def __init__(self) -> None:
@@ -47,29 +48,75 @@ class AirwaySegmentRematcher:
         # Compute the distance matrix between the centroids
         distance_matrix = cdist(baseline_coords, followup_coords)
         
-        # Find the closest centroid in centroids2 for each centroid in centroids1
+        # Now assign each label to its closest match remaining in the set
+        # Once a label is matched, it is removed from the set
+        # Since the two can have different numbers of labels, we need to keep track of which labels have been matched
+        # The remaining will be matched to themselves, and 0 to 0
         matches = {}
-        for i, label1 in enumerate(baseline_coords):
-            closest_idx = np.argmin(distance_matrix[i])
-            label2 = followup_labels[closest_idx]
-            matches[label1] = label2
+        set1 = set(baseline_labels)
+        set2 = set(followup_labels)
+
+        # Pick the smallest set to iterate over
+        if len(set1) < len(set2):
+            set_iter = set1
+        else:
+            set_iter = set2
         
+        while len(set_iter) > 0:
+            min_distance = np.inf
+            min_pair = None
+            
+            for label1 in set1:
+                for label2 in set2:
+                    distance = distance_matrix[label1 - 1, label2 - 1]
+                    if distance < min_distance:
+                        min_distance = distance
+                        min_pair = (label1, label2)
+            
+            label1, label2 = min_pair
+            matches[label1] = label2
+            
+            set1.remove(label1)
+            set2.remove(label2)
+
+        print(matches)
         return matches
 
 
-def apply_matching(segmentation, matches):
-    """
-    Apply the matching to a segmentation.
-    :param segmentation: Segmentation to apply the matching to.
-    :param matches: Matching to apply.
-    :return: Rematched segmentation.
-    """
-    rematched_segmentation = np.zeros_like(segmentation)
+    def apply_matching(self, segmentation, matches):
+        """
+        Apply the matching to a segmentation.
+        :param segmentation: Segmentation to apply the matching to.
+        :param matches: Matching to apply.
+        :return: Rematched segmentation.
+        """
+        rematched_segmentation = np.zeros_like(segmentation)
+        print(segmentation.shape)
+        print('----')
+        for label1, label2 in matches.items():
+            rematched_segmentation[segmentation == label1] = label2
+        
+        return rematched_segmentation
     
-    for label1, label2 in matches.items():
-        rematched_segmentation[segmentation == label1] = label2
-    
-    return rematched_segmentation
+    def rematch(self, baseline, followup) -> np.ndarray:
+        """
+        Rematch the airway segmentations of a baseline and follow-up volume.
+        :param baseline: Path to the baseline volume.
+        :param followup: Path to the follow-up volume.
+        :return: Rematched segmentation.
+        """
+        baseline = nib.load(baseline)
+        followup = nib.load(followup)
+        
+        matches = self.centroid_based_matching(baseline.get_fdata(), followup.get_fdata())
+        rematched_segmentation = self.apply_matching(baseline.get_fdata(), matches)
+
+        print(rematched_segmentation.shape)
+        aff = baseline.affine
+        # Save the rematched segmentation
+        output_vol = nib.Nifti1Image(rematched_segmentation.astype(np.int32), aff , baseline.header)
+        nib.save(output_vol, "rematched_segmentation.nii.gz")
+        return rematched_segmentation
 
 def find_centroid(binary_volume):
     # Ensure the input is a numpy array
@@ -85,15 +132,16 @@ def find_centroid(binary_volume):
 
 if __name__ == "__main__":
         # Example usage:
-    # Assuming `binary_volume` is a 3D numpy array where 1 represents the object and 0 represents the background
-    binary_volume = np.array([
-        [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-        [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
-        [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
-    ])
-
-    centroid = find_centroid(binary_volume)
-    print("Centroid:", centroid)
+    baseline = '../y0_labeled_resampled.nii.gz'
+    followup = '../../data/annotated/y2_final_clean_2455_coloured_airway_refactored_all.nii.gz'
+   
+    #nib1 = nib.load('rematched_segmentation.nii.gz')
+    #d = nib1.get_fdata()
+    #print(d.shape)
+    #print(d)
+    rematcher = AirwaySegmentRematcher()
+    rematcher.rematch(baseline, followup)
+    
 
 
 
