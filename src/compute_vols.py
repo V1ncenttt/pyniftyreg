@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import tqdm
 
-vol1 = nib.load("y0_labeled_resampled.nii.gz")
+vol1 = nib.load("pyNiftyReg/rematched_segmentation.nii.gz")
 vol2 = nib.load(
     "../data/annotated/y2_final_clean_2455_coloured_airway_refactored_all.nii.gz"
 )

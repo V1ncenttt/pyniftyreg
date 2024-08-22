@@ -167,6 +167,32 @@ def dilate(segmentation: np.ndarray, iterations: int = 1) -> np.ndarray:
     dilated = binary_dilation(segmentation, iterations=iterations)
     return dilated
 
+def dilate_vol(vol: nib.Nifti1Image, output_path: str, iterations: int = 1) -> None:
+    """
+    Dilate a segmentation volume and save the result as a NIfTI file.
+
+    Parameters:
+    vol (nibabel.Nifti1Image): NIfTI image object.
+    output_path (str): Path to save the dilated volume.
+    iterations (int): Number of dilation iterations.
+
+    Returns:
+    None
+    """
+    vol = nib.load(vol)
+    vol_data = vol.get_fdata()
+    dilated_data = dilate(vol_data, iterations=iterations)
+
+    nib.save(nib.Nifti1Image(dilated_data, vol.affine, vol.header), output_path)
+
+
+    vol_data = vol.get_fdata()
+    dilated_data = dilate(vol_data, iterations=iterations)
+
+    new_img = nib.Nifti1Image(dilated_data, vol.affine, vol.header)
+    nib.save(new_img, output_path)
+
+    print(f"Dilated volume saved to {output_path}")
 
 def erode(segmentation: np.ndarray, iterations: int = 1) -> np.ndarray:
     """

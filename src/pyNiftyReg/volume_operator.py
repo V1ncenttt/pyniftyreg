@@ -40,7 +40,7 @@ class VolumeOperator:
         """
         Initializes the Operator class with the path to the NiftyReg binaries.
         """
-        self.niftyreg_dir = "../niftk-18.5.4/bin"
+        self.niftyreg_dir = "../niftk-18.5.4/bin/"
 
     def multiply(self, img1: str, img2: str, output_name: str = None):
         """
