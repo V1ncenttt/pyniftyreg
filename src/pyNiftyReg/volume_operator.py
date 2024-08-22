@@ -19,7 +19,7 @@ setting masked values to NaN.
 import os
 
 
-class Operator:
+class VolumeOperator:
     """
     A class to perform various image operations using NiftyReg's reg_tools.
 
