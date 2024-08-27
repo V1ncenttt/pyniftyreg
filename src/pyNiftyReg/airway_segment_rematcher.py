@@ -3,7 +3,22 @@ from scipy.spatial.distance import cdist
 import nibabel as nib
 import matplotlib.pyplot as plt
 import tqdm
+from scipy.optimize import linear_sum_assignment
+from pyNiftyReg.utils import *
 
+K = 0.01
+def dfun(u, v, vol1, vol2):
+    return np.sqrt(((u-v)**2).sum()) + K * (vol1 - vol2) ** 2
+
+# function to compute the distance matrix
+def compute_distance_matrix(vol1, vol2):
+    distance_matrix = np.zeros((vol1.shape[0], vol2.shape[0]))
+    for i in range(vol1.shape[0]):
+        volume1 = compute_volume(vol1[i])
+        for j in range(vol2.shape[0]):
+            volume2 = compute_volume(vol2[j])
+            distance_matrix[i, j] = dfun(vol1[i], vol2[j], volume1, volume2)
+    return distance_matrix
 
 class AirwaySegmentRematcher:
 
@@ -31,6 +46,44 @@ class AirwaySegmentRematcher:
 
         return centroids
 
+    def centroid_optimization_matching(self, baseline, followup) -> np.ndarray:
+        baseline_centroids = self.get_centroids(baseline)
+        followup_centroids = self.get_centroids(followup)
+
+        baseline_labels = list(baseline_centroids.keys())
+        followup_labels = list(followup_centroids.keys())
+
+        baseline_coords = np.array(
+            [baseline_centroids[label] for label in baseline_labels]
+        )
+        followup_coords = np.array(
+            [followup_centroids[label] for label in followup_labels]
+        )
+
+        distance_matrix = compute_distance_matrix(baseline_coords, followup_coords)
+
+        row_ind, col_ind = linear_sum_assignment(distance_matrix)
+        # Now assign each label to its closest match remaining in the set
+        # Once a label is matched, it is removed from the set
+        # Since the two can have different numbers of labels, we need to keep track of which labels have been matched
+        # The remaining will be matched to themselves, and 0 to 0
+        matches = {
+            i: i
+            for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
+        }
+        set1 = set(baseline_labels)
+        set2 = set(followup_labels)
+
+        # Put the matches in a dictionary
+
+        for i in range(len(row_ind)):
+            label1 = baseline_labels[row_ind[i]]
+            label2 = followup_labels[col_ind[i]]
+            matches[label1] = label2
+
+            set1.remove(label1)
+            set2.remove(label2)
+ 
     def centroid_based_matching(self, baseline, followup) -> np.ndarray:
         """
         Rematch the airway segmentations of a baseline and follow-up volume,
