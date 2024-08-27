@@ -4,7 +4,7 @@ import nibabel as nib
 import matplotlib.pyplot as plt
 import tqdm
 from scipy.optimize import linear_sum_assignment
-from pyNiftyReg.utils import *
+from utils import *
 
 K = 0.01
 def dfun(u, v, vol1, vol2):
@@ -115,7 +115,7 @@ class AirwaySegmentRematcher:
         # Since the two can have different numbers of labels, we need to keep track of which labels have been matched
         # The remaining will be matched to themselves, and 0 to 0
         matches = {
-            i: None
+            i: i
             for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
         }
         set1 = set(baseline_labels)
@@ -161,26 +161,27 @@ class AirwaySegmentRematcher:
 
         return rematched_segmentation
 
-    def rematch(self, baseline, followup) -> np.ndarray:
+    def rematch(self, baseline_original, baseline_resampled, followup) -> np.ndarray:
         """
         Rematch the airway segmentations of a baseline and follow-up volume.
         :param baseline: Path to the baseline volume.
         :param followup: Path to the follow-up volume.
         :return: Rematched segmentation.
         """
-        baseline = nib.load(baseline)
+        baseline_resampled = nib.load(baseline_resampled)
+        baseline_original = nib.load(baseline_original)
         followup = nib.load(followup)
 
         matches = self.centroid_based_matching(
-            baseline.get_fdata(), followup.get_fdata()
+            baseline_resampled.get_fdata(), followup.get_fdata()
         )
-        rematched_segmentation = self.apply_matching(baseline.get_fdata(), matches)
+        rematched_segmentation = self.apply_matching(baseline_original.get_fdata(), matches)
 
-        print(rematched_segmentation.shape)
-        aff = baseline.affine
+        
+        aff = baseline_original.affine
         # Save the rematched segmentation
         output_vol = nib.Nifti1Image(
-            rematched_segmentation.astype(np.int32), aff, baseline.header
+            rematched_segmentation.astype(np.int32), aff, baseline_original.header
         )
         print(
             "3/3 : Saving the rematched segmentation to rematched_segmentation.nii.gz"
@@ -205,6 +206,7 @@ def find_centroid(binary_volume):
 
 if __name__ == "__main__":
     # Example usage:
+    baseline_original = '../../data/annotated/y0_final_clean_2455_coloured_airway_refactored_all.nii.gz'
     baseline = "../y0_labeled_resampled.nii.gz"
     followup = (
         "../../data/annotated/y2_final_clean_2455_coloured_airway_refactored_all.nii.gz"
@@ -215,4 +217,4 @@ if __name__ == "__main__":
     # print(d.shape)
     # print(d)
     rematcher = AirwaySegmentRematcher()
-    rematcher.rematch(baseline, followup)
+    rematcher.rematch(baseline_original, baseline, followup)
