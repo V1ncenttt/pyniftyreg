@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import tqdm
 from scipy.optimize import linear_sum_assignment
 from utils import *
-
-K = 0.01
+import pandas as pd
+K = 0.001
 def dfun(u, v, vol1, vol2):
-    return np.sqrt(((u-v)**2).sum()) + K * (vol1 - vol2) ** 2
+    return np.sqrt(((u-v)**2).sum()) + K * np.abs(vol1 - vol2) 
 
 # function to compute the distance matrix
 def compute_distance_matrix(vol1, vol2, volumes1, volumes2):
@@ -87,6 +87,15 @@ class AirwaySegmentRematcher:
             set1.remove(label1)
             set2.remove(label2)
         
+        final_distances = distance_matrix[row_ind, col_ind]
+        # Perform a z-score test to point out the outliers
+        z_scores = np.abs((final_distances - np.mean(final_distances)) / np.std(final_distances))
+        outliers = np.where(z_scores > 2)
+        print("Outliers: ", outliers)
+
+        #print("Final distances: ", final_distances)
+        pd.DataFrame(final_distances).to_csv('distance_matrix.csv')
+
         return matches
  
     def centroid_based_matching(self, baseline, followup) -> np.ndarray:
