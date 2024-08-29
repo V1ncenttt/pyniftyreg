@@ -11,12 +11,12 @@ def dfun(u, v, vol1, vol2):
     return np.sqrt(((u-v)**2).sum()) + K * (vol1 - vol2) ** 2
 
 # function to compute the distance matrix
-def compute_distance_matrix(vol1, vol2):
+def compute_distance_matrix(vol1, vol2, volumes1, volumes2):
     distance_matrix = np.zeros((vol1.shape[0], vol2.shape[0]))
     for i in range(vol1.shape[0]):
-        volume1 = compute_volume(vol1[i])
+        volume1 = volumes1[i]
         for j in range(vol2.shape[0]):
-            volume2 = compute_volume(vol2[j])
+            volume2 = volumes2[j]
             distance_matrix[i, j] = dfun(vol1[i], vol2[j], volume1, volume2)
     return distance_matrix
 
@@ -47,8 +47,8 @@ class AirwaySegmentRematcher:
         return centroids
 
     def centroid_optimization_matching(self, baseline, followup) -> np.ndarray:
-        baseline_centroids = self.get_centroids(baseline)
-        followup_centroids = self.get_centroids(followup)
+        baseline_centroids = self.get_centroids(baseline.get_fdata())
+        followup_centroids = self.get_centroids(followup.get_fdata())
 
         baseline_labels = list(baseline_centroids.keys())
         followup_labels = list(followup_centroids.keys())
@@ -60,7 +60,10 @@ class AirwaySegmentRematcher:
             [followup_centroids[label] for label in followup_labels]
         )
 
-        distance_matrix = compute_distance_matrix(baseline_coords, followup_coords)
+        baseline_volumes = [compute_volume(baseline, label) for label in baseline_labels]
+        followup_volumes = [compute_volume(followup, label) for label in followup_labels]
+
+        distance_matrix = compute_distance_matrix(baseline_coords, followup_coords, baseline_volumes, followup_volumes)
 
         row_ind, col_ind = linear_sum_assignment(distance_matrix)
         # Now assign each label to its closest match remaining in the set
@@ -83,6 +86,8 @@ class AirwaySegmentRematcher:
 
             set1.remove(label1)
             set2.remove(label2)
+        
+        return matches
  
     def centroid_based_matching(self, baseline, followup) -> np.ndarray:
         """
@@ -172,9 +177,10 @@ class AirwaySegmentRematcher:
         baseline_original = nib.load(baseline_original)
         followup = nib.load(followup)
 
-        matches = self.centroid_based_matching(
-            baseline_resampled.get_fdata(), followup.get_fdata()
+        matches = self.centroid_optimization_matching(
+            baseline_resampled, followup
         )
+
         rematched_segmentation = self.apply_matching(baseline_original.get_fdata(), matches)
 
         
