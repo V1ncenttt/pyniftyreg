@@ -5,4 +5,3 @@ from .utils import *
 from .transformer import Transformer
 from .airway_segment_rematcher import AirwaySegmentRematcher
 from .volume_operator import VolumeOperator
-

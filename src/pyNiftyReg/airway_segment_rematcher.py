@@ -6,12 +6,18 @@ import tqdm
 from scipy.optimize import linear_sum_assignment
 from utils import *
 import pandas as pd
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+
 K = 0.001
+
+
 def dfun(u, v, vol1, vol2):
-    return np.sqrt(((u-v)**2).sum()) + K * np.abs(vol1 - vol2) 
+    return np.sqrt(((u - v) ** 2).sum()) + K * np.abs(vol1 - vol2)
+
 
 # function to compute the distance matrix
-def compute_distance_matrix(vol1, vol2, volumes1, volumes2):
+def compute_distance_matrix(vol1, vol2, volumes1, volumes2, dfun=dfun):
     distance_matrix = np.zeros((vol1.shape[0], vol2.shape[0]))
     for i in range(vol1.shape[0]):
         volume1 = volumes1[i]
@@ -19,6 +25,7 @@ def compute_distance_matrix(vol1, vol2, volumes1, volumes2):
             volume2 = volumes2[j]
             distance_matrix[i, j] = dfun(vol1[i], vol2[j], volume1, volume2)
     return distance_matrix
+
 
 class AirwaySegmentRematcher:
 
@@ -31,18 +38,25 @@ class AirwaySegmentRematcher:
         :param volume: Path to the volume.
         :return: Centroids.
         """
-        print("----3.1 : Finding the centroids...")
         centroids = {}
 
         max_val = int(np.max(volume))
 
-        for i in tqdm.tqdm(range(1, max_val + 1)):
-            # Find the centroid of the segmentation where it is equal to i
-
-            # Find the centroid of the segmentation where it is equal to i
+        def compute_centroid(i):
             coords = np.argwhere(volume == i)
+            if coords.size == 0:
+                return i, None
             centroid = np.mean(coords, axis=0)
-            centroids[i] = centroid
+            return i, centroid
+
+        with ThreadPoolExecutor() as executor:
+            futures = {
+                executor.submit(compute_centroid, i): i for i in range(1, max_val + 1)
+            }
+            for future in tqdm.tqdm(as_completed(futures), total=len(futures)):
+                i, centroid = future.result()
+                if centroid is not None:
+                    centroids[i] = centroid
 
         return centroids
 
@@ -60,10 +74,16 @@ class AirwaySegmentRematcher:
             [followup_centroids[label] for label in followup_labels]
         )
 
-        baseline_volumes = [compute_volume(baseline, label) for label in baseline_labels]
-        followup_volumes = [compute_volume(followup, label) for label in followup_labels]
+        baseline_volumes = [
+            compute_volume(baseline, label) for label in baseline_labels
+        ]
+        followup_volumes = [
+            compute_volume(followup, label) for label in followup_labels
+        ]
 
-        distance_matrix = compute_distance_matrix(baseline_coords, followup_coords, baseline_volumes, followup_volumes)
+        distance_matrix = compute_distance_matrix(
+            baseline_coords, followup_coords, baseline_volumes, followup_volumes
+        )
 
         row_ind, col_ind = linear_sum_assignment(distance_matrix)
         # Now assign each label to its closest match remaining in the set
@@ -71,8 +91,7 @@ class AirwaySegmentRematcher:
         # Since the two can have different numbers of labels, we need to keep track of which labels have been matched
         # The remaining will be matched to themselves, and 0 to 0
         matches = {
-            i: i
-            for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
+            i: i for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
         }
         set1 = set(baseline_labels)
         set2 = set(followup_labels)
@@ -86,18 +105,20 @@ class AirwaySegmentRematcher:
 
             set1.remove(label1)
             set2.remove(label2)
-        
+
         final_distances = distance_matrix[row_ind, col_ind]
         # Perform a z-score test to point out the outliers
-        z_scores = np.abs((final_distances - np.mean(final_distances)) / np.std(final_distances))
+        z_scores = np.abs(
+            (final_distances - np.mean(final_distances)) / np.std(final_distances)
+        )
         outliers = np.where(z_scores > 2)
         print("Outliers: ", outliers)
 
-        #print("Final distances: ", final_distances)
-        pd.DataFrame(final_distances).to_csv('distance_matrix.csv')
+        # print("Final distances: ", final_distances)
+        pd.DataFrame(final_distances).to_csv("distance_matrix.csv")
 
         return matches
- 
+
     def centroid_based_matching(self, baseline, followup) -> np.ndarray:
         """
         Rematch the airway segmentations of a baseline and follow-up volume,
@@ -129,8 +150,7 @@ class AirwaySegmentRematcher:
         # Since the two can have different numbers of labels, we need to keep track of which labels have been matched
         # The remaining will be matched to themselves, and 0 to 0
         matches = {
-            i: i
-            for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
+            i: i for i in range(1, max(max(baseline_labels), max(followup_labels)) + 1)
         }
         set1 = set(baseline_labels)
         set2 = set(followup_labels)
@@ -186,13 +206,12 @@ class AirwaySegmentRematcher:
         baseline_original = nib.load(baseline_original)
         followup = nib.load(followup)
 
-        matches = self.centroid_optimization_matching(
-            baseline_resampled, followup
+        matches = self.centroid_optimization_matching(baseline_resampled, followup)
+
+        rematched_segmentation = self.apply_matching(
+            baseline_original.get_fdata(), matches
         )
 
-        rematched_segmentation = self.apply_matching(baseline_original.get_fdata(), matches)
-
-        
         aff = baseline_original.affine
         # Save the rematched segmentation
         output_vol = nib.Nifti1Image(
@@ -221,7 +240,9 @@ def find_centroid(binary_volume):
 
 if __name__ == "__main__":
     # Example usage:
-    baseline_original = '../../data/annotated/y0_final_clean_2455_coloured_airway_refactored_all.nii.gz'
+    baseline_original = (
+        "../../data/annotated/y0_final_clean_2455_coloured_airway_refactored_all.nii.gz"
+    )
     baseline = "../y0_labeled_resampled.nii.gz"
     followup = (
         "../../data/annotated/y2_final_clean_2455_coloured_airway_refactored_all.nii.gz"
